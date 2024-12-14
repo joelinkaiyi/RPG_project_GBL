@@ -1,5 +1,5 @@
 # 哥布林猴的一生 (Developed By Joey Lin)
-![image] https://github.com/joelinkaiyi/RPG_project_GBL/blob/main/%E5%93%A5%E5%B8%83%E6%9E%97.jpg
+![image](https://github.com/joelinkaiyi/RPG_project_GBL/blob/main/%E5%93%A5%E5%B8%83%E6%9E%97.jpg)
 ## 專案簡介
 一款基於 C++ 開發的哥布林扮演(或者不是扮演)遊戲。玩家可以探索地圖、戰鬥以防止被騙出洞穴、完成工作賺取金幣，以及管理角色的資源。遊戲整合地圖系統、商店系統、戰鬥系統和工作系統，提供豐富的遊戲體驗。
 
