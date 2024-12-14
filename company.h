@@ -18,8 +18,8 @@ public:
     {
         // 初始化工作名稱和報酬/體力消耗
         works["廉價勞力"] = make_pair(20, 2);
-        works["爆肝工程師"] = make_pair(60, 6);
-        works["老闆的牛馬"] = make_pair(120, 12);
+        works["洞穴守護者"] = make_pair(60, 6);
+        works["女冒險者的舔狗"] = make_pair(120, 12);
     }
 
     // 顯示可用工作列表

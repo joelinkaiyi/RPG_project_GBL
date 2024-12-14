@@ -99,7 +99,7 @@ int main()
                 cout << "- ";
             cout << endl;
 
-            cout << "輸入指令（w/a/s/d移動，pos查看怪物與玩家的位置，fight與怪物戰鬥，work工作，shop進入商店，bag查看背包，recover使用藥水恢復體力，stats查看狀態，upgrade提升屬性，learn學習技能，upgradeSkill升級技能，equip裝備武器，skills查看技能列表，q退出遊戲）:" << endl;
+            cout << "輸入指令（w/a/s/d移動，pos查看怪物與玩家的位置，fight與怪物戰鬥，work工作，shop進入商店，bag查看背包，recover使用藥水恢復體力，stats查看狀態，upgrade提升屬性，learn學習技能，upgradeSkill升級技能，skills查看技能列表，q退出遊戲）:" << endl;
             map.displayMap();
 
             for (int i = 0; i < row; i++)

@@ -81,7 +81,7 @@ public:
         }
         else if (hasMonsterAt(playerX, playerY))
         {
-            mapGrid[playerX][playerY] = 'I'; // 如果當前位置有怪物，恢復怪物標誌
+            mapGrid[playerX][playerY] = 'i'; // 如果當前位置有怪物，恢復怪物標誌
         }
         else
         {
@@ -196,7 +196,7 @@ public:
 
             Monster monster(name, x, y, strength);
             monsters.push_back(monster);
-            mapGrid[x][y] = 'I'; // 用 'I' 標記怪物
+            mapGrid[x][y] = 'i'; // 用 'i' 標記怪物
         }
         cout << "生成了 " << count << " 隻怪物。" << endl;
     }
