@@ -82,7 +82,7 @@ int main()
     cout << "選擇職業 (1. 哥布林戰士, 2.哥布林長老): ";
     cin >> jobChoice;
     JobType job = (jobChoice == 1) ? JobType::warrior : JobType::elder;
-    Player player(username,job); // 使用登入的帳號名稱作為玩家名稱
+    Player player(username, job); // 使用登入的帳號名稱作為玩家名稱
 
     while (true)
     {
@@ -99,7 +99,7 @@ int main()
                 cout << "- ";
             cout << endl;
 
-            cout << "輸入指令（w/a/s/d移動，pos查看怪物與玩家的位置，fight與怪物戰鬥，work工作，shop進入商店，bag查看背包，recover使用藥水恢復體力，stats查看狀態，upgrade提升屬性，learn學習技能，upgradeSkill升級技能，skills查看技能列表，q退出遊戲）:" << endl;
+            cout << "輸入指令（w/a/s/d移動，pos查看怪物與玩家的位置，fight與怪物戰鬥，work工作，shop進入商店，bag查看背包，recover使用藥水恢復體力，stats查看狀態，upgrade提升屬性，learn學習技能，upgradeSkill升級技能，skills查看技能列表，pets查看寵物，sp選擇寵物，q退出遊戲）:" << endl;
             map.displayMap();
 
             for (int i = 0; i < row; i++)
@@ -191,35 +191,7 @@ int main()
             }
             else if (cmd == "learn")
             {
-                string skillName;
-                cout << "輸入要學習的技能名稱：";
-                cin >> skillName;
-                int damage = 0, manaCost = 0, upgradeCost = 0;
-                if (skillName == "地圖記憶")
-                {
-                    damage = 30;
-                    manaCost = 15;
-                    upgradeCost = 3;
-                }
-                else if (skillName == "眼不見為淨")
-                {
-                    damage = 25;
-                    manaCost = 10;
-                    upgradeCost = 2;
-                }
-                else if (skillName == "自嘲術")
-                {
-                    damage = 40;
-                    manaCost = 20;
-                    upgradeCost = 4;
-                }
-                else
-                {
-                    cout << "未知技能，無法學習！" << endl;
-                    continue;
-                }
-
-                player.learnSkill(skillName, damage, manaCost, upgradeCost);
+                player.learnSkillByNumber();
             }
             else if (cmd == "useSkill")
             {
@@ -238,6 +210,18 @@ int main()
             else if (cmd == "skills")
             {
                 player.displaySkills();
+            }
+            else if (cmd == "pets")
+            {
+                player.displayPets();
+            }
+            else if (cmd == "sp")
+            {
+                player.displayPets();
+                cout << "請輸入要切換的寵物編號：";
+                int index;
+                cin >> index;
+                player.switchPet(index);
             }
             else
             {

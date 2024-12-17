@@ -1,11 +1,11 @@
 #include <iostream>
 #include <vector>
-#include<string>
+#include <string>
 #include <unordered_map>
 #include <utility>
 #include <cstdlib>
 #include <ctime>
-#include<unistd.h>
+#include <unistd.h>
 #include "shop.h"
 #include "player.h"
 #include "monster.h"
@@ -27,7 +27,7 @@ private:
     const int refreshWhenAllDefeat;
 
 public:
-    Map(int r, int c,Player &p) : row(r), col(c), playerX(r / 2), playerY(c / 2),refreshWhenAllDefeat(r/2),player(p)
+    Map(int r, int c, Player &p) : row(r), col(c), playerX(r / 2), playerY(c / 2), refreshWhenAllDefeat(r / 2), player(p)
     {
         // 初始化地圖和商店位置
         mapGrid.resize(row, vector<char>(col, '.'));
@@ -116,7 +116,8 @@ public:
         mapGrid[playerX][playerY] = '@';
     }
 
-    pair<int,int>getPlayerPosition()const{
+    pair<int, int> getPlayerPosition() const
+    {
         return make_pair(playerX, playerY);
     }
 
@@ -150,30 +151,31 @@ public:
         }
     }
 
-    void enterShop(){
-        // 檢查當前玩家位置是否在商店
+    void enterShop()
+    {
         if (isShopLocation(playerX, playerY))
         {
             cout << "歡迎來到商店！" << endl;
-            shop.displayItems();
 
-            string itemName;
-            cout << "請輸入要購買的編號（或輸入 'exit' 離開商店）：" << endl;
+            shop.displayItems(); // 顯示商品列表
+
             while (true)
             {
-                cin >> itemName;
-                if (itemName == "exit")
+                cout << "請輸入要購買的商品編號 (輸入 0 離開商店)：";
+                int itemIndex;
+                cin >> itemIndex;
+
+                if (itemIndex == 0)
                 {
-                    cout << "離開商店。" << endl;
+                    cout << "離開商店，歡迎下次光臨！" << endl;
                     break;
                 }
 
-                // 嘗試購買物品
-                if (!shop.buyItem(itemName, player.getMoney(), player.getInventory(),player))
+                if (!shop.buyItem(itemIndex, player.getMoney(), player.getInventory(), player))
                 {
-                    cout << "購買失敗。" << endl;
+                    cout << "購買失敗，請重新選擇！" << endl;
                 }
-                player.displayMoney();
+                player.displayMoney(); // 顯示剩餘金幣
             }
         }
         else
@@ -181,6 +183,7 @@ public:
             cout << "這裡沒有商店。" << endl;
         }
     }
+
     void generateMonsters(int count)
     {
         vector<string> monsterNames;
@@ -244,13 +247,15 @@ public:
             }
             else if (choice == "2")
             {
-                cout << "輸入技能名稱：" << endl;
-                string skillName;
-                cin >> skillName;
-                player.useSkill(skillName);
-                if (monster.strength > 0)
+                string skillName = player.selectSkill();
+                if (!skillName.empty())
                 {
-                    monster.strength -= player.getSkillDamage(skillName);
+                    player.useSkill(skillName);
+                    int skillDamage = player.getSkillDamage(skillName);
+                    if (skillDamage > 0)
+                    {
+                        monster.strength -= skillDamage;
+                    }
                 }
             }
             else if (choice == "3")
@@ -284,12 +289,19 @@ public:
             {
                 cout << "怪物 " << monster.name << " 已被擊敗！" << endl;
                 monstersDefeated++;
+                // 寵物獲取機率（例如：20%）
+                if (rand() % 100 < 20)
+                {
+                    player.addPet(monster.name, monster.strength / 2);
+                }
                 int expGained = rand() % 50 + 10;
                 int moneyEarned = rand() % 20 + 5;
                 cout << "恭喜你成功防止自己被騙出洞穴！獲得經驗值 " << expGained << " 和金幣 " << moneyEarned << endl;
                 player.gainExperience(expGained);
                 player.earnMoney(moneyEarned);
+                player.activePetGainExp(expGained); // 寵物獲得經驗
                 // 使用移除邏輯
+
                 removeMonster(monster);
 
                 break;
@@ -318,12 +330,13 @@ public:
     {
         cout << "刷新怪物..." << endl;
         monsters.clear();
-        generateMonsters(row/2); // 重新生成(row/2)隻怪物
+        generateMonsters(row / 2); // 重新生成(row/2)隻怪物
         usleep(1000);
         cout << "怪物刷新完成。" << endl;
         monstersDefeated = 0;
     }
-    void checkMonster(){
+    void checkMonster()
+    {
         cout << "怪物所在位置" << endl;
         for (auto monster : monsters)
         {

@@ -4,6 +4,7 @@
 #include <vector>
 #include<unordered_map>
 #include<unistd.h>
+#include "pet.h"
 using namespace std;
 
 enum class JobType
@@ -42,7 +43,8 @@ private:
     int skillPoints = 0;                   // 技能點數
     unordered_map<string, int> attributes; // 儲存各項屬性
     unordered_map<string, Skill> skills;
-    
+    vector<Pet> pets;         // 玩家擁有的寵物
+    Pet *activePet = nullptr; // 當前攜帶的寵物
 
 public:
     Player(string name,JobType job) : money(200),name(name),job(job) {
@@ -140,19 +142,47 @@ public:
             cout << "屬性點數不足或無效屬性名稱！" << endl;
         }
     }
-
-    void learnSkill(const string &skillName, int damage, int manaCost, int upgradeCost)
+    void learnSkillByNumber()
     {
-        if (skills.find(skillName) == skills.end())
+        vector<pair<string, Skill> > skillChoices;
+        skillChoices.emplace_back(make_pair("地圖記憶", Skill("地圖記憶", 30, 15, 3)));
+        skillChoices.emplace_back(make_pair("眼不見為淨", Skill("眼不見為淨", 25, 10, 2)));
+        skillChoices.emplace_back(make_pair("自嘲術", Skill("自嘲術", 40, 20, 4)));
+
+        cout << "可學習的技能列表：" << endl;
+        for (size_t i = 0; i < skillChoices.size(); ++i)
         {
-            skills[skillName] = Skill(skillName, damage, manaCost, upgradeCost);
-            cout << "學習技能 " << skillName << " 成功！" << endl;
+            cout << i + 1 << ". " << skillChoices[i].first
+                 << " (傷害：" << skillChoices[i].second.damage
+                 << ", 魔力消耗：" << skillChoices[i].second.manaCost
+                 << ", 升級所需技能點數：" << skillChoices[i].second.upgradeCost << ")" << endl;
+        }
+
+        cout << "請輸入要學習的技能編號：" << endl;
+        int choice;
+        cin >> choice;
+
+        if (choice >= 1 && choice <= skillChoices.size())
+        {
+            string skillName = skillChoices[choice - 1].first;
+            Skill skill = skillChoices[choice - 1].second;
+
+            if (skills.find(skillName) == skills.end())
+            {
+                skills[skillName] = skill;
+                cout << "學習技能：" << skillName << " 成功！" << endl;
+            }
+            else
+            {
+                cout << "你已經學習了該技能！" << endl;
+            }
         }
         else
         {
-            cout << "你已經學習了這個技能！" << endl;
+            cout << "無效的選擇！" << endl;
         }
     }
+
 void useSkill(const string &skillName) {
         if (skills.find(skillName) != skills.end()) {
             Skill &skill = skills[skillName];
@@ -187,14 +217,59 @@ void useSkill(const string &skillName) {
 
     void displaySkills() {
         cout << "當前技能列表：" << endl;
-        for (const auto &pair : skills) {
+        int count = 1;
+        for (const auto &pair : skills)
+        {
             const Skill &skill = pair.second;
-            cout << "- " << skill.name << " 等級: " << skill.level
+            cout << count++ << ". " << skill.name
+                 << " (等級: " << skill.level
                  << ", 傷害: " << skill.damage
                  << ", 魔力消耗: " << skill.manaCost
-                 << ", 升級所需技能點數: " << skill.upgradeCost << endl;
+                 << ", 升級所需技能點數: " << skill.upgradeCost << ")" << endl;
+        }
+        if (skills.empty())
+        {
+            cout << "尚未學習任何技能！" << endl;
         }
     }
+    string selectSkill()
+    {
+        if (skills.empty())
+        {
+            cout << "你尚未學習任何技能！" << endl;
+            return "";
+        }
+
+        cout << "==== 選擇技能 ====" << endl;
+        int index = 1;
+        vector<string> skillNames;
+
+        for (const auto &pair : skills)
+        {
+            const Skill &skill = pair.second;
+            cout << index << ". " << skill.name
+                 << " (傷害: " << skill.damage
+                 << ", 魔力消耗: " << skill.manaCost
+                 << ")" << endl;
+            skillNames.push_back(pair.first);
+            index++;
+        }
+
+        cout << "請輸入技能編號：" << endl;
+        int choice;
+        cin >> choice;
+
+        if (choice >= 1 && choice <= skillNames.size())
+        {
+            return skillNames[choice - 1];
+        }
+        else
+        {
+            cout << "無效的選擇！" << endl;
+            return "";
+        }
+    }
+
     int getSkillDamage(const string &skillName)
     {
         if (skills.find(skillName) != skills.end())
@@ -279,6 +354,64 @@ void useSkill(const string &skillName) {
                 cout << "武器 " << equippedWeapon << " 已損壞！" << endl;
                 removeWeapon();
             }
+        }
+    }
+    void addPet(const string &petName, int strength)
+    {
+        pets.emplace_back(petName, strength);
+        cout << "獲得新寵物：" << petName << "！" << endl;
+        if (!activePet)
+        {
+            activePet = &pets.back();
+            cout << "當前寵物設為：" << petName << endl;
+        }
+    }
+
+    void displayPets()
+    {
+        if (pets.empty())
+        {
+            cout << "你尚未擁有任何寵物！" << endl;
+            return;
+        }
+
+        cout << "你擁有的寵物列表：" << endl;
+        for (size_t i = 0; i < pets.size(); ++i)
+        {
+            cout << i + 1 << ". " << pets[i].getName()
+                 << " (等級：" << pets[i].getLevel()
+                 << ", 攻擊加成：" << pets[i].getStrength() << ")" << endl;
+        }
+
+        if (activePet)
+        {
+            cout << "當前攜帶的寵物：" << activePet->getName() << endl;
+        }
+    }
+
+    void switchPet(int index)
+    {
+        if (index > 0 && index <= pets.size())
+        {
+            activePet = &pets[index - 1];
+            cout << "切換至寵物：" << activePet->getName() << endl;
+        }
+        else
+        {
+            cout << "無效的選擇。" << endl;
+        }
+    }
+
+    int getActivePetBonus()
+    {
+        return activePet ? activePet->getStrength() : 0;
+    }
+
+    void activePetGainExp(int exp)
+    {
+        if (activePet)
+        {
+            activePet->gainExperience(exp);
         }
     }
 };
