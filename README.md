@@ -77,5 +77,9 @@
 確保已安裝 C++ 編譯器，使用以下指令編譯專案：  
 ```bash
 g++ main.cpp -o RPGGame
-
+```
+### **2.執行遊戲**
+```bash
+./RPGGame
+```
 
